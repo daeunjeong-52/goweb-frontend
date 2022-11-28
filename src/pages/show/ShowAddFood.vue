@@ -1,14 +1,16 @@
 <template>
-  <RouterView/>
+  <div>
+
+  </div>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+    name: "ShowAddRoom",
+
 }
 </script>
 
 <style scoped>
-  
+    
 </style>
