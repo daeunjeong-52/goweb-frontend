@@ -1,5 +1,5 @@
 <template>
-  <span>
+    <div>
         <img :src='`${item.image}`' width="300" height="300">
         <div>
             <h3 class="fw-bold mb-0 fs-4">{{ item.brand  }}</h3>
@@ -11,9 +11,8 @@
                 <li>{{ item.category3 }}</li>
                 <li>{{ item.category4 }}</li>
             </ul>
-            
         </div>
-    </span>
+    </div>
 </template>
 
 <script>

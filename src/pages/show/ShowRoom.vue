@@ -35,8 +35,8 @@
           <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="search()">검색</button>
         </div>
         <div v-for="(item, idx) in state.searchItems" :key="idx">
-          <SearchItem :item="item"/>
-          <button type="button" class="btn btn-sm btn-outline-secondary" @click="addCart(item)">담기</button>
+            <SearchItem :item="item"/>
+            <button type="button" class="btn btn-sm btn-outline-secondary" @click="addCart(item)">담기</button>
         </div>
       </div>
 
