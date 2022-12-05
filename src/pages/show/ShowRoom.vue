@@ -31,10 +31,13 @@
       <div class="container px-4 py-5" id="icon-grid">
         <h2 class="pb-2 border-bottom">제품 정보 검색해보기</h2>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="원하는 정보를 검색해보세요 (외부 api 연동)" aria-label="Recipient's username" aria-describedby="button-addon2">
-          <button class="btn btn-outline-secondary" type="button" id="button-addon2">검색</button>
+          <input type="text" class="form-control" placeholder="원하는 정보를 검색해보세요 (외부 api 연동)" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="state.query">
+          <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="search()">검색</button>
         </div>
-        
+        <div v-for="(item, idx) in state.searchItems" :key="idx">
+          <SearchItem :item="item"/>
+          <button type="button" class="btn btn-sm btn-outline-secondary" @click="addCart(item)">담기</button>
+        </div>
       </div>
 
       <!-- 댓글 -->
@@ -55,6 +58,7 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ShowRoomItem from '@/components/ShowRoomItem.vue';
 import CommentList from '@/components/CommentList.vue';
+import SearchItem from '@/components/SearchItem.vue';
 
 export default {
     name: 'ShowRoom',
@@ -62,7 +66,8 @@ export default {
         Header,
         Footer,
         ShowRoomItem,
-        CommentList
+        CommentList,
+        SearchItem
     },
     setup() {
         const route = useRoute();
@@ -70,7 +75,10 @@ export default {
         const state = reactive({
             room: {},
             roomItems: [],
-            comments: []
+            comments: [],
+            query: "",
+            searchItems: [],
+            userId: sessionStorage.getItem("id")
         })
 
         // room 상세
@@ -86,7 +94,41 @@ export default {
                 state.comments = res.data;
             })
 
-        return { state, route, id };
+        const search = () => {
+          axios.get('/api/search/items', {
+            params: {
+              "query": state.query
+            }
+          })
+          .then((res) => {
+            console.log(res.data.items);
+            state.searchItems = res.data.items;
+          })
+        }
+
+        // 장바구니 담기
+        const addCart = (item) => {
+          const args = {
+            image: item.image,
+            brand: item.brand,
+            link: item.link,
+            lprice: item.lprice,
+            category1: item.category1,
+            category2: item.category2,
+            category3: item.category3,
+            category4: item.category4
+          };
+          axios.post('/api/carts/room', args, {
+            params: {
+              "userId": state.userId
+            }
+          })
+          .then((res) => {
+            console.log(res);
+          })
+        }
+
+        return { state, route, id, search, addCart };
     }
 }
 </script>

@@ -4,7 +4,6 @@
         <div>
             <h3 class="fw-bold mb-0 fs-4">{{ foodItem.ingredientName  }}</h3>
             <p>{{ foodItem.purchasePlace }}</p>
-            <p>{{ foodItem.price }}원</p>
         </div>
     </span>
 </template>

@@ -3,7 +3,7 @@
       <Header />
         <div class="container">
             <div class="my-posts-header">
-            <h3>My Space</h3>
+            <h3>나의 게시글 관리</h3>
             <div class="my-posts-btn-group">
                 <a href="add-room.html" class="btn btn-post-add">Add My Room</a>
                 <a href="add-food.html" class="btn btn-post-add">Add My Food</a>
@@ -66,20 +66,16 @@ export default {
             pageArr: [1, 2, 3, 4, 5],
             perPage: 9,
             currentPage: 1,
-            totalPost: 0
+            totalPost: 0,
+            userId: sessionStorage.getItem('id')
         });
 
-        // post 전체 조회
-        // TODO: 로그인 구현 후 user 정보 추가
-        axios.get("/api/show/my-posts")
-            .then((res) => {
-                state.posts = res.data;
-            })
-        
+        // post 페이징
         axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -92,7 +88,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -104,7 +101,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage + 1,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -116,7 +114,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage + 2,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -128,7 +127,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage + 3,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -140,7 +140,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage + 4,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
         })
         .then((res) => {
@@ -165,7 +166,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
             })
             .then((res) => {
@@ -183,7 +185,8 @@ export default {
             axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage,
-                "perPage": state.perPage
+                "perPage": state.perPage,
+                "userId": state.userId
             }
             })
             .then((res) => {

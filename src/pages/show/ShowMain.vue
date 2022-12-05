@@ -1,6 +1,6 @@
 <template>
   <div>
-      <Header/>
+      <Header :user="user"/>
       <div class="container">
           <div class="show-feed">
             <div class="show-feed-header">
@@ -72,6 +72,9 @@ export default {
         Footer,
         ShowRoomCard,
         ShowFoodCard
+    },
+    props: {
+      user: Object
     },
     setup() {
         const state = reactive({

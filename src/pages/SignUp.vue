@@ -1,56 +1,110 @@
 <template>
   <div>
-      <!-- header -->
+      <div v-if="state.account.userId">
+          <SignUpComplete :user="state.account"/>
+      </div>
+      <div v-else>
+        <!-- header -->
         <div class="container">
             <div class="header">
                 <h1>회원가입</h1>
             </div>
         </div>
+        <div if="state.error.message">
+            {{ state.error.message }}
+        </div>
         <!-- content -->
         <div class="container">
             <div class="content">
-                <form action="" method="POST">
-                        <!-- signup info -->
-                        <div class="signup-info">
-                            <div class="mb-3 row">
-                                <label for="userId" class="col-sm-2 col-form-label">아이디</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" id="userId">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="password" class="col-sm-2 col-form-label">비밀번호</label>
-                                <div class="col-sm-10">
-                                <input type="password" class="form-control" id="password">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="username" class="col-sm-2 col-form-label">이름</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" id="username">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="nickname" class="col-sm-2 col-form-label">닉네임</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" id="nickname">
-                                </div>
-                            </div>
+                <!-- signup info -->
+                <div class="signup-info">
+                    <div class="mb-3 row">
+                        <label for="loginId" class="col-sm-2 col-form-label">아이디</label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" id="loginId" v-model="state.form.loginId">
                         </div>
-                    <!-- user login button -->
-                    <div class="btn-signup-group">
-                        <button type="submit" class="btn btn-signup">회원가입</button>
-                        <button type="button" class="btn btn-cancel">뒤로가기</button>
                     </div>
-                </form>
+                    <div class="mb-3 row">
+                        <label for="loginPw" class="col-sm-2 col-form-label">비밀번호</label>
+                        <div class="col-sm-10">
+                        <input type="password" class="form-control" id="loginPw" v-model="state.form.loginPw">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="username" class="col-sm-2 col-form-label">이름</label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" id="username" v-model="state.form.username">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="nickname" class="col-sm-2 col-form-label">닉네임</label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" id="nickname" v-model="state.form.nickname">
+                        </div>
+                    </div>
+                        </div>
+                    <!-- user sign-up button -->
+                    <div class="btn-signup-group">
+                        <button type="submit" class="btn btn-signup" @click="submit()">회원가입</button>
+                        <router-link to="/">
+                            <button type="button" class="btn btn-cancel">뒤로가기</button>
+                        </router-link>
+                    </div>
             </div>
         </div>
+      </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { reactive } from 'vue';
+import SignUpComplete from '../pages/SignUpComplete.vue';
+
 export default {
-    name: 'SignUp'
+    name: 'SignUp',
+    components: {
+        SignUpComplete,
+    },
+    setup() {
+        const state = reactive({
+            account: {
+                userId: null,
+                username: "",
+                nickname: "",
+            },
+            form: {
+                loginId: "",
+                loginPw: "",
+                username: "",
+                nickname: "",
+            },
+            error: {
+                message: ""
+            }
+        });
+
+        const submit = () => {
+            const args = {
+                loginId: state.form.loginId,
+                loginPw: state.form.loginPw,
+                username: state.form.username,
+                nickname: state.form.nickname
+            };
+
+            axios.post("/api/sign-up", args)
+                .then((res) => {
+                    alert("회원 가입에 성공했습니다");
+                    state.account = res.data;
+                })
+                .catch((err) => {
+                    console.log(err.response.data.message);
+                    state.error.message = err.response.data.message;
+                })
+        };
+
+        return { state, submit };
+    }
 }
 </script>
 

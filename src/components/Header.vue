@@ -16,8 +16,9 @@
           </ul>
     
           <div class="col-md-3 text-end">
-            정다은님,
-            <button type="button" class="btn btn-logout me-2">Logout</button>
+             정다은님,
+            <router-link to="/login" class="text" v-if="!$store.state.account.id">로그인</router-link>
+            <a to="/login" class="text" @click="logout()" v-else>로그아웃</a>
           </div>
         </header>
       </div>
@@ -25,8 +26,24 @@
 </template>
 
 <script>
+import store from "@/scripts/store";
+import router from "@/scripts/router";
+
 export default {
-    name: 'Header'
+    name: 'Header',
+    props: {
+      user: Object
+    },
+    setup() {
+      const logout = () => {
+        store.commit('setAccount', 0);
+        sessionStorage.removeItem('setAccount', 0);
+        window.alert('로그아웃 하였습니다');
+        router.push({ path: "/show/main"});
+      }
+
+      return { logout };
+    }
 }
 </script>
 
