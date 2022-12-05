@@ -118,13 +118,13 @@ export default {
             category3: item.category3,
             category4: item.category4
           };
-          axios.post('/api/carts/room', args, {
+          axios.post('/api/carts/rooms/items', args, {
             params: {
-              "userId": state.userId
+              "userId": state.userId,
             }
           })
           .then((res) => {
-            console.log(res);
+            alert("장바구니에 담겼습니다");
           })
         }
 
