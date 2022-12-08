@@ -1,5 +1,6 @@
 <template>
-  <div>
+    <div>
+        <div v-if="state.loggedIn">
       <Header />
         <div class="container">
             <div class="my-posts-header">
@@ -43,7 +44,12 @@
             </ul>
         </nav>
       <Footer />
-  </div>
+        </div>    
+        <div v-else>
+            <Login />
+        </div>
+    </div>
+  
 </template>
 
 <script>
@@ -52,13 +58,15 @@ import { reactive } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ShowPostCard from '@/components/ShowPostCard.vue';
+import Login from '../Login.vue';
 
 export default {
     name: "ShowMyMain",
     components: {
         Header,
         Footer,
-        ShowPostCard
+        ShowPostCard,
+        Login
     },
     setup() {
         const state = reactive({
@@ -67,15 +75,21 @@ export default {
             perPage: 9,
             currentPage: 1,
             totalPost: 0,
-            userId: sessionStorage.getItem('id')
+            user: null,
+            loggedIn: false
         });
+
+        axios.get('/api/account')
+            .then(res => {
+                state.user = res.data;
+                state.loggedIn = true
+            })
 
         // post 페이징
         axios.get("/api/show/my-posts", {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -89,7 +103,6 @@ export default {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -102,7 +115,6 @@ export default {
             params: {
                 "currentPage": state.currentPage + 1,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -115,7 +127,6 @@ export default {
             params: {
                 "currentPage": state.currentPage + 2,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -128,7 +139,6 @@ export default {
             params: {
                 "currentPage": state.currentPage + 3,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -141,7 +151,6 @@ export default {
             params: {
                 "currentPage": state.currentPage + 4,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
         })
         .then((res) => {
@@ -167,7 +176,6 @@ export default {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
             })
             .then((res) => {
@@ -186,7 +194,6 @@ export default {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
-                "userId": state.userId
             }
             })
             .then((res) => {

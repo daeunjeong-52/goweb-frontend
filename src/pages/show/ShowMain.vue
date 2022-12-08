@@ -73,9 +73,6 @@ export default {
         ShowRoomCard,
         ShowFoodCard
     },
-    props: {
-      user: Object
-    },
     setup() {
         const state = reactive({
             rooms: [],

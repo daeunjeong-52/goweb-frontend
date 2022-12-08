@@ -45,12 +45,7 @@ import router from "@/scripts/router";
 export default {
     name: 'Login',
     setup() {
-        axios.get("/api/show/my-posts")
-            .then(({data}) => {
-                console.log(data);
-            })
-
-
+        
         const state = reactive({
             form: {
                 loginId: "",
@@ -59,12 +54,12 @@ export default {
         });
 
         const submit = () => {
-            axios.post("/api/login", state.form)
+            axios.post("/api/account", state.form)
                 .then((res) => {
-                    router.push({ path: "/show/main"});
-                    sessionStorage.setItem('id', res.data.userId);
-                    store.commit('setAccount', res.data.userId);
+                    sessionStorage.setItem('id', res.data);
+                    store.commit('setAccount', res.data);
                     window.alert('로그인하였습니다');
+                    router.push({ path: "/show/main"});
                 })
                 .catch(() => {
                     window.alert('로그인 정보가 존재하지 않습니다');

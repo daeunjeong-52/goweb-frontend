@@ -13,6 +13,9 @@
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                                 <div class="col" v-for="(cartItem, idx) in state.roomCartItems" :key="idx">
                                     <RoomCartItem :cartItem="cartItem"/>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" @click="removeItem(cartItem.id)">삭제</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -20,6 +23,24 @@
                 </main>
             </div>
         </div>
+
+        <!-- pagination  -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" aria-label="Previous" @click="prevPage()">이전</a>
+                </li>
+                <li class="page-item"><a class="page-link" @click="firstPage()">{{ state.pageArr[0] }}</a></li>
+                <li class="page-item"><a class="page-link" @click="secondPage()">{{ state.pageArr[1] }}</a></li>
+                <li class="page-item"><a class="page-link" @click="thirdPage()">{{ state.pageArr[2] }}</a></li>
+                <li class="page-item"><a class="page-link" @click="fourthPage()">{{ state.pageArr[3] }}</a></li>
+                <li class="page-item"><a class="page-link" @click="fifthPage()">{{ state.pageArr[4] }}</a></li>
+    
+                <li class="page-item">
+                    <a class="page-link" @click="nextPage()">다음</a>
+                </li>
+            </ul>
+        </nav>
       <Footer/>
   </div>
 </template>
@@ -33,7 +54,6 @@ import axios from 'axios';
 import store from "@/scripts/store";
 import router from "@/scripts/router";
 
-
 export default {
     name: "MyRoomCart",
     components: {
@@ -43,37 +63,176 @@ export default {
     },
     setup() {
         const state = reactive({
-            userId: sessionStorage.getItem("id"),
+            user: null,
+            loggedIn: false,
             roomCart: null,
             roomCartItems: [],
-            totalPrice: null
+            totalRoomCartItems: [],
+            totalPrice: null,
+            // 페이징
+            pageArr: [1, 2, 3, 4, 5],
+            perPage: 9,
+            currentPage: 1,
+            totalPost: 0
         });
 
-        // find room cart
-        axios.get("/api/carts/rooms", {
-            params: {
-                "userId" : state.userId
-            }
-        })
+        // 유저 정보 가져오기
+        axios.get("/api/account")
+            .then(res => {
+                state.user = res.data;
+                state.loggedIn = true;
+            })
+
+        axios.get("/api/carts/rooms")
         .then((res) => {
             state.roomCart = res.data;
             console.log(state.roomCart);
         })
+
         
         // get room cart items
-        axios.get("/api/carts/rooms/items", {
+        const allItems = () => {
+            axios.get("/api/carts/rooms/items/all")
+                .then((res) => {
+                    state.totalRoomCartItems = res.data;
+                    for(let i = 0; i < state.totalRoomCartItems.length; i++) {
+                        state.totalPrice += state.totalRoomCartItems[i].lprice;
+                    }  
+            })
+        }
+
+        // load
+        const load = () => {
+            axios.get("/api/carts/rooms/items", {
+                params: {
+                    "currentPage": state.currentPage,
+                    "perPage": state.perPage,
+                }
+            })
+            .then((res) => {
+                state.roomCartItems = res.data;
+            })
+        }
+       
+        // 페이징 (1번째)
+        const firstPage = () => 
+
+            axios.get("/api/carts/rooms/items", {
             params: {
-                "userId": state.userId
+                "currentPage": state.currentPage,
+                "perPage": state.perPage,
             }
         })
         .then((res) => {
             state.roomCartItems = res.data;
-            for(let i = 0; i < state.roomCartItems.length; i++) {
-                state.totalPrice += state.roomCartItems[i].lprice;
-            }  
         })
 
-        return { state };
+        // 페이징 (2번째)
+        const secondPage = () => 
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage + 1,
+                "perPage": state.perPage,
+            }
+        })
+        .then((res) => {
+            state.roomCartItems = res.data;
+        })
+
+        // 페이징 (3번째)
+        const thirdPage = () => 
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage + 2,
+                "perPage": state.perPage,
+            }
+        })
+        .then((res) => {
+            state.roomCartItems = res.data;
+        })
+
+        // 페이징 (4번째)
+        const fourthPage = () => 
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage + 3,
+                "perPage": state.perPage,
+            }
+        })
+        .then((res) => {
+            state.roomCartItems = res.data;
+        })
+
+        // 페이징 (5번째)
+        const fifthPage = () => 
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage + 4,
+                "perPage": state.perPage,
+            }
+        })
+        .then((res) => {
+            state.roomCartItems = res.data;
+        })
+
+        // 이전 페이지네이션 바 숫자
+        const prevPage = () => {
+            if(state.currentPage < 1) {
+                state.currentPage = 1;
+            }
+            for(let i = 0; i < 5; i++) {
+                if(state.pageArr[i] - 5 > 0) {
+                    state.pageArr[i] = state.pageArr[i] - 5;
+                }else {
+                    state.pageArr = [1, 2, 3, 4, 5]
+                }
+            }
+
+            state.currentPage = state.pageArr[0];
+
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage,
+                "perPage": state.perPage,
+            }
+            })
+            .then((res) => {
+                state.roomCartItems = res.data;
+            })
+        };
+
+        // 다음 페이지네이션 바 숫자
+        const nextPage = () => {
+            for(let i = 0; i < 5; i++) {
+                state.pageArr[i] = state.pageArr[i] + 5;
+            }
+            state.currentPage = state.pageArr[0];
+
+            axios.get("/api/carts/rooms/items", {
+            params: {
+                "currentPage": state.currentPage,
+                "perPage": state.perPage,
+            }
+            })
+            .then((res) => {
+                state.roomCartItems = res.data;
+            })
+        }
+
+        const removeItem  = (idx) => {
+            axios.delete("/api/carts/rooms/items/" + idx)
+                .then(() => {
+                    state.totalRoomCartItems = null;
+                    state.totalPrice = 0;
+                    allItems();
+                    load();
+                })
+        }
+
+        allItems();
+        load();
+        
+        return { state, firstPage, secondPage, thirdPage, fourthPage, fifthPage, prevPage, nextPage, removeItem};
     }
 }
 </script>

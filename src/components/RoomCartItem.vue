@@ -14,9 +14,7 @@
                 <li>{{ cartItem.category4 }}</li>
             </ul>
 
-            <div class="d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @click="remove()">삭제</button>
-            </div>
+           
         </div>
         </div>
 </template>

@@ -14,9 +14,9 @@
             <li><a href="#" class="nav-link px-2 link-dark">질문공간</a></li>
             <li><a href="#" class="nav-link px-2 link-dark">내 정보</a></li>
           </ul>
-    
+
+          <!-- login/logout -->
           <div class="col-md-3 text-end">
-             정다은님,
             <router-link to="/login" class="text" v-if="!$store.state.account.id">로그인</router-link>
             <a to="/login" class="text" @click="logout()" v-else>로그아웃</a>
           </div>
@@ -26,20 +26,24 @@
 </template>
 
 <script>
-import store from "@/scripts/store";
-import router from "@/scripts/router";
+import axios from 'axios';
+import { reactive } from "vue";
+import store from '@/scripts/store';
+import router from '@/scripts/router';
 
 export default {
     name: 'Header',
-    props: {
-      user: Object
-    },
     setup() {
+
+      // 세션 - clear
       const logout = () => {
-        store.commit('setAccount', 0);
-        sessionStorage.removeItem('setAccount', 0);
-        window.alert('로그아웃 하였습니다');
-        router.push({ path: "/show/main"});
+        store.commit("setAccount", 0);
+        router.push({path: "/show/main"});
+
+        axios.delete("/api/account")
+          .then(() => {
+            window.alert('로그아웃 하였습니다');
+          })
       }
 
       return { logout };
@@ -48,5 +52,9 @@ export default {
 </script>
 
 <style scoped>
-  
+    
+
+    li {
+      list-style: none
+    }
 </style>

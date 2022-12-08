@@ -43,7 +43,15 @@
       <!-- 댓글 -->
       <div class="container px-4 py-5" id="icon-grid">
         <h2 class="pb-3 border-bottom">소통 공간</h2>
-        <CommentList :comments="state.comments"/>
+          <div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" v-model="state.commentForm.title">
+              <button type="button" class="btn btn-sm btn-outline-secondary" @click="add()">등록</button>
+            </div>
+            <div v-for="(comment, idx) in state.comments" :key="idx">
+              <ShowRoomCommentList :comment="comment"/>
+            </div>
+          </div>
       </div>
       
     <Footer/>
@@ -57,8 +65,8 @@ import {useRoute} from "vue-router";
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ShowRoomItem from '@/components/ShowRoomItem.vue';
-import CommentList from '@/components/CommentList.vue';
 import SearchItem from '@/components/SearchItem.vue';
+import ShowRoomCommentList from '@/components/ShowRoomCommentList.vue';
 
 export default {
     name: 'ShowRoom',
@@ -66,8 +74,8 @@ export default {
         Header,
         Footer,
         ShowRoomItem,
-        CommentList,
-        SearchItem
+        SearchItem,
+        ShowRoomCommentList
     },
     setup() {
         const route = useRoute();
@@ -78,7 +86,10 @@ export default {
             comments: [],
             query: "",
             searchItems: [],
-            userId: sessionStorage.getItem("id")
+            commentForm: {
+              title: ""
+            },
+            postId: 1
         })
 
         // room 상세
@@ -88,12 +99,32 @@ export default {
                 state.roomItems = state.room[0].RoomItems;
             })
 
-        // comments
-        axios.get('/api/show/rooms/' + state.postId + '/comments')
+        // get comments
+        const load = () => {
+          axios.get('/api/show/rooms/comments', {
+            params: {
+              "postId" : state.postId
+            }
+          })
+            .then((res) => {
+                state.comments = res.data;
+                console.log(state.comments);
+            })
+        }
+       
+        // comment add
+        const add = () => {
+          axios.post('/api/show/rooms/comments', state.commentForm)
             .then((res) => {
                 state.comments = res.data;
             })
+          load();
+        }
 
+        load();
+
+
+        // 제품 검색
         const search = () => {
           axios.get('/api/search/items', {
             params: {
@@ -118,17 +149,13 @@ export default {
             category3: item.category3,
             category4: item.category4
           };
-          axios.post('/api/carts/rooms/items', args, {
-            params: {
-              "userId": state.userId,
-            }
-          })
+          axios.post('/api/carts/rooms/items', args)
           .then((res) => {
             alert("장바구니에 담겼습니다");
           })
         }
 
-        return { state, route, id, search, addCart };
+        return { state, route, id, search, addCart, add };
     }
 }
 </script>
