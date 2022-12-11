@@ -1,15 +1,19 @@
 <template>
-  <div>
-    <div class="comment-box">{{ comment.content }}</div>
-  </div>
+    <tr>
+      <td>{{ comment.content }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ comment.createdAt }}</td>
+    </tr>
 </template>
 
 <script>
+
 export default {
     name: "ShowRoomCommentList",
     props: {
-      comment: Object
-    }
+      comment: Object,
+      user: Object
+    },
 }
 </script>
 

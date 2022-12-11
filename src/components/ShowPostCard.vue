@@ -6,9 +6,7 @@
               <p class="card-text">{{ post.description }}</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <router-link :to="{path: `/show/my-posts/${post.id}`}">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">상세</button>
-                  </router-link>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="detail()">상세</button>
                 </div>
                 <small class="text-muted">좋아요 {{ post.like }}</small>
               </div>
@@ -17,10 +15,21 @@
 </template>
 
 <script>
+import router from '@/scripts/router.js';
+import { reactive } from 'vue';
+
 export default {
     name: 'ShowPostCard',
     props: {
         post: Object
+    },
+    setup() {
+      
+      const detail = () => {
+        router.push({ path: '/show/my-posts/' + post.id});
+      }
+
+      return { detail };
     }
 }
 </script>

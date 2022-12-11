@@ -45,15 +45,25 @@
         <h2 class="pb-3 border-bottom">소통 공간</h2>
           <div>
             <div class="input-group mb-3">
-              <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" v-model="state.commentForm.title">
-              <button type="button" class="btn btn-sm btn-outline-secondary" @click="add()">등록</button>
+              <input type="text" class="form-control" aria-describedby="basic-addon2" v-model="state.commentForm.content">
+              <button type="button" class="btn btn-sm btn-outline-secondary" @click="add(state.user.id)">등록</button>
             </div>
-            <div v-for="(comment, idx) in state.comments" :key="idx">
-              <ShowRoomCommentList :comment="comment"/>
-            </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">작성일시</th>
+                  </tr>
+                </thead>
+                  <tbody v-for="(comment, idx) in state.comments" :key="idx">
+                    <ShowRoomCommentList 
+                      :user="comment.User"
+                      :comment="comment"/>
+                  </tbody>
+              </table>
           </div>
       </div>
-      
     <Footer/>
   </div>
 </template>
@@ -81,16 +91,26 @@ export default {
         const route = useRoute();
         const id = route.params.id;
         const state = reactive({
+            user: null,
+            loggedIn: false,
             room: {},
             roomItems: [],
             comments: [],
             query: "",
             searchItems: [],
             commentForm: {
-              title: ""
+              postId: id,
+              ontent: "",
+              userId: null
             },
-            postId: 1
-        })
+            postId: id,
+        });
+
+        axios.get("/api/account")
+          .then((res) => {
+            state.user = res.data;
+            state.loggedIn = true;
+          })
 
         // room 상세
         axios.get('/api/show/rooms/' + id)
@@ -100,29 +120,27 @@ export default {
             })
 
         // get comments
-        const load = () => {
-          axios.get('/api/show/rooms/comments', {
+        const commentsLoad = () => {
+          axios.get('/api/comments', {
             params: {
               "postId" : state.postId
             }
           })
-            .then((res) => {
-                state.comments = res.data;
-                console.log(state.comments);
-            })
+          .then((res) => {
+              state.comments = res.data;
+              console.log(state.comments);
+          })
         }
-       
+        commentsLoad();
+
         // comment add
-        const add = () => {
-          axios.post('/api/show/rooms/comments', state.commentForm)
+        const add = (userId) => {
+          state.commentForm.userId = userId;
+          axios.post('/api/comments', state.commentForm)
             .then((res) => {
-                state.comments = res.data;
+                commentsLoad();
             })
-          load();
         }
-
-        load();
-
 
         // 제품 검색
         const search = () => {

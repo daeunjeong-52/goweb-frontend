@@ -1,17 +1,10 @@
 <template>
-    <div>
-        <div v-if="state.loggedIn">
-      <Header />
-        <div class="container">
-            <div class="my-posts-header">
-            <h3>나의 게시글 관리</h3>
-            <div class="my-posts-btn-group">
-                <router-link to="/show/my-posts/rooms/add">
-                    <button type="button" class="btn btn-post-add">Add My Room</button>
-                </router-link>
-                <a href="add-food.html" class="btn btn-post-add">Add My Food</a>
+        <div>
+            <Header/>
+            <div class="container col-xxl-8 px-4 py-5">
+            <div class="room-header">
+                <h2>My Rooms</h2>
             </div>
-        </div>
         </div>
         <div class="container">
             <div class="room-content">
@@ -19,8 +12,8 @@
                     <div class="album py-5 bg-light">
                         <div class="container">
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                                <div class="col" v-for="(post, idx) in state.posts" :key="idx">
-                                    <ShowPostCard :post="post"/>
+                                <div class="col" v-for="(room, idx) in state.rooms" :key="idx">
+                                    <ShowRoomCardMy :room="room"/>
                                 </div>
                             </div>
                         </div>
@@ -28,6 +21,7 @@
                 </main>
             </div>
         </div>
+
         <!-- pagination  -->
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
@@ -45,13 +39,8 @@
                 </li>
             </ul>
         </nav>
-      <Footer />
-        </div>    
-        <div v-else>
-            <Login />
-        </div>
+        <Footer/>
     </div>
-  
 </template>
 
 <script>
@@ -59,104 +48,102 @@ import axios from 'axios';
 import { reactive } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
-import ShowPostCard from '@/components/ShowPostCard.vue';
-import Login from '../Login.vue';
+import ShowRoomCardMy from '../../components/ShowRoomCardMy.vue';
 
 export default {
-    name: "ShowMyMain",
+    name: 'ShowMyRooms',
     components: {
         Header,
         Footer,
-        ShowPostCard,
-        Login
+        ShowRoomCardMy
     },
     setup() {
         const state = reactive({
-            posts: [],
+            rooms: [],
             pageArr: [1, 2, 3, 4, 5],
             perPage: 9,
             currentPage: 1,
             totalPost: 0,
             user: null,
             loggedIn: false
-        });
-
-        axios.get('/api/account')
+        })
+        
+        axios.get("/api/account")
             .then(res => {
                 state.user = res.data;
-                state.loggedIn = true
+                state.loggedIn = true;
             })
-
-        // post 페이징
-        axios.get("/api/show/my-posts", {
+        
+        // 초기 화면
+        axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 페이징 (1번째)
         const firstPage = () => 
 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 페이징 (2번째)
         const secondPage = () => 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage + 1,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 페이징 (3번째)
         const thirdPage = () => 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage + 2,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 페이징 (4번째)
         const fourthPage = () => 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage + 3,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 페이징 (5번째)
         const fifthPage = () => 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage + 4,
                 "perPage": state.perPage,
             }
         })
         .then((res) => {
-            state.posts = res.data;
+            state.rooms = res.data;
         })
 
         // 이전 페이지네이션 바 숫자
@@ -174,14 +161,14 @@ export default {
 
             state.currentPage = state.pageArr[0];
 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
             }
             })
             .then((res) => {
-                state.posts = res.data;
+                state.rooms = res.data;
             })
         };
 
@@ -192,14 +179,14 @@ export default {
             }
             state.currentPage = state.pageArr[0];
 
-            axios.get("/api/show/my-posts", {
+            axios.get("/api/my-posts/rooms/all", {
             params: {
                 "currentPage": state.currentPage,
                 "perPage": state.perPage,
             }
             })
             .then((res) => {
-                state.posts = res.data;
+                state.rooms = res.data;
             })
         }
         return { state, firstPage, secondPage, thirdPage, fourthPage, fifthPage, prevPage, nextPage };
@@ -208,44 +195,43 @@ export default {
 </script>
 
 <style scoped>
-    h3 {
+    .room-header {
+        margin-bottom: 1rem;
+      }
+      h2 {
         text-align: center;
-        margin: 1.5rem;
-    }
-    .card-img-top {
-        height: 15rem;
+      }
+      .card-group {
+        margin-bottom: 2rem;
+      }
+      .card-img-top {
+        height: 20rem;
         object-fit: cover;
-    }
-    .card-body {
-    height: 10rem;
-    object-fit: cover;
-    }
-    a {
-    text-decoration-line: none;
-    color: #D0B8A8;
-    }
-    a:hover {
-        color: gray;
-    }
-    .page-link {
+      }
+      .card-body {
+        height: 10rem;
+        object-fit: cover;
+      }
+      .page-link {
         color: #D0B8A8;
-    }
-    .page-link:hover {
+      }
+      .page-link:hover {
         background-color: #D0B8A8;
         color: white;
-    }
-    nav {
-        margin: 1rem;
-    }
-    .btn-post-add {
-        background-color: #D0B8A8;
+      }
+      .btn-detail {
         color: white;
-    }
-    .my-posts-btn-group {
-        text-align: center;
-    }
-    .btn-update {
         background-color: #D0B8A8;
-        color: white;
-    }
+      }
+      .btn-detail:hover {
+        color: #D0B8A8;
+        background-color: white;
+      }
+      a {
+        text-decoration-line: none;
+        color: #D0B8A8;
+      }
+      a:hover {
+        color: gray;
+      }
 </style>
