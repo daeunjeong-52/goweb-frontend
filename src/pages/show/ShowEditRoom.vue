@@ -44,7 +44,9 @@
 
           <div class="add-btn-group">
             <button type="button" class="btn btn-add" @click="save()">저장</button>
-            <button type="button" class="btn btn-cancel">취소</button>
+            <router-link :to="{path: `/show/my-posts/rooms/${state.postId}`}">
+                <button type="button" class="btn btn-cancel">취소</button>
+            </router-link>
           </div>
       <Footer/>
   </div>

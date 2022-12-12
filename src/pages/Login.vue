@@ -27,7 +27,7 @@
                     <!-- user login button -->
                     <div class="btn-login-group">
                         <button type="submit" class="btn btn-login" @click="submit()">로그인</button>
-                        <router-link to="/">
+                        <router-link to="/show/main">
                             <button type="button" class="btn btn-cancel">뒤로가기</button>
                         </router-link>
                     </div>

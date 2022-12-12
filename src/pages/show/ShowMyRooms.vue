@@ -5,6 +5,11 @@
             <div class="room-header">
                 <h2>My Rooms</h2>
             </div>
+            <div class="btn-add">
+                <router-link to="/show/my-posts/rooms/add">
+                    <button type="button" class="btn btn-secondary">Add My Room</button>
+                </router-link>
+            </div>
         </div>
         <div class="container">
             <div class="room-content">
@@ -233,5 +238,9 @@ export default {
       }
       a:hover {
         color: gray;
+      }
+      .btn-add {
+          text-align: center;
+          margin: 1rem;
       }
 </style>

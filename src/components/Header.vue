@@ -8,11 +8,12 @@
     
           <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark"><span style="color:#D0B8A8;">자랑공간</span></a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">꿀팁공간</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">대화공간</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">질문공간</a></li>
-            <li><a href="#" class="nav-link px-2 link-dark">내 정보</a></li>
+            <router-link to="/show/main">
+              <li><a class="nav-link px-2 link-dark"><span style="color:#D0B8A8;">전체 게시글</span></a></li>
+            </router-link>
+            <router-link to="/my-info">
+              <li><a class="nav-link px-2 link-dark">내 정보</a></li>
+            </router-link>
           </ul>
 
           <!-- login/logout -->

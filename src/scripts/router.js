@@ -21,6 +21,8 @@ import ShowMyRoomPost from '@/pages/show/ShowMyRoomPost';
 import ShowMyFoodPost from '@/pages/show/ShowMyFoodPost';
 import ShowEditRoom from '@/pages/show/ShowEditRoom';
 
+import ImgTest from '@/pages/ImgTest';
+
 import MyMap from '@/pages/MyMap';
 
 const routes = [
@@ -44,6 +46,8 @@ const routes = [
     { path: '/my-info/carts', component: MyCart},
     { path: '/my-info/carts/rooms', component: MyRoomCart},
     { path: '/my-info/carts/foods', component: MyFoodCart},
+
+    { path: '/test', component: ImgTest},
     
     { path: '/map', component: MyMap }
 

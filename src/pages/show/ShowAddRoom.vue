@@ -8,7 +8,7 @@
             <div class="container">
               <div class="mb-3">
                   <label for="formFile" class="form-label">이미지 추가</label>
-                  <input class="form-control" type="file" id="formFile" v-on:change="changeFile">
+                  <input class="form-control" type="file" id="formFile" v-on:change="changeFile" />
               </div>
               <span>제목</span>
               <div class="input-group mb-3">
@@ -44,7 +44,9 @@
 
           <div class="add-btn-group">
             <button type="button" class="btn btn-add" @click="submit()">저장</button>
-            <button type="button" class="btn btn-cancel">취소</button>
+            <router-link to='/show/my-posts/rooms'>
+              <button type="button" class="btn btn-cancel">취소</button>
+            </router-link>
           </div>
         <Footer/>
     </div>
@@ -68,9 +70,8 @@ export default {
             form: {
                 title: '',
                 description: '',
-                // imgPath: '',
+                imgPath: '',
                 category: 'room',
-
                 productName1: '',
                 brandName1: '',
                 productName2: '',
@@ -79,9 +80,10 @@ export default {
                 brandName3: '',
                 productName4: '',
                 brandName4: '',
+                uploadFile: null
             },
             user: null,
-            loggedIn: false
+            loggedIn: false,
             
         });
 
@@ -106,7 +108,6 @@ export default {
                 brandName4: state.form.brandName4,
                 userId: state.user.id
             };
-
             axios.post("/api/my-posts/rooms", args)
                 .then((res) => {
                     window.alert('저장이 완료되었습니다');
@@ -114,14 +115,12 @@ export default {
                 })
         }
 
-        // const changeFile = (e) => {
-        //     console.log(e.target.files);
-        //     state.form.imgPath = e.target.files[0];
-        //     console.log(state.form.imgPath);
-        // }
-
+        const changeFile = (e) => {
+          state.form.uploadFile = e.target.files[0];
+          console.log(state.form.uploadFile);
+        }
     
-        return { state, submit };
+        return { state, submit, changeFile };
     }
 }
 </script>

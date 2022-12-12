@@ -13,7 +13,7 @@
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             </div>
           </div>
-          <span>이 게시글 찜(추가 구현 필요)</span>
+          <span></span>
         </div>
       </div>
 
@@ -31,7 +31,7 @@
       <div class="container px-4 py-5" id="icon-grid">
         <h2 class="pb-2 border-bottom">제품 정보 검색해보기</h2>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="원하는 정보를 검색해보세요 (외부 api 연동)" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="state.query">
+          <input type="text" class="form-control" placeholder="원하는 정보를 검색해보세요" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="state.query">
           <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="search()">검색</button>
         </div>
         <div v-for="(item, idx) in state.searchItems" :key="idx">
@@ -59,7 +59,12 @@
                   <tbody v-for="(comment, idx) in state.comments" :key="idx">
                     <ShowRoomCommentList 
                       :user="comment.User"
-                      :comment="comment"/>
+                      :comment="comment"
+                      />
+                    <div v-if="comment.User.id === state.user.id">
+                      <button type="button" class="btn btn-delete" @click="removeComment(comment.id)">삭제</button>
+                    </div>
+                    <tr v-else></tr>
                   </tbody>
               </table>
           </div>
@@ -77,6 +82,7 @@ import Footer from '@/components/Footer.vue';
 import ShowRoomItem from '@/components/ShowRoomItem.vue';
 import SearchItem from '@/components/SearchItem.vue';
 import ShowRoomCommentList from '@/components/ShowRoomCommentList.vue';
+import router from '@/scripts/router.js';
 
 export default {
     name: 'ShowRoom',
@@ -104,6 +110,7 @@ export default {
               userId: null
             },
             postId: id,
+            myComments: [],
         });
 
         axios.get("/api/account")
@@ -111,6 +118,16 @@ export default {
             state.user = res.data;
             state.loggedIn = true;
           })
+
+        // 내가 쓴 댓글
+        axios.get("/api/comments/my", {
+          params: {
+            "postId": state.postId,
+          }
+        })
+        .then((res) => {
+            state.myComments = res.data;
+        })
 
         // room 상세
         axios.get('/api/show/rooms/' + id)
@@ -140,6 +157,19 @@ export default {
             .then((res) => {
                 commentsLoad();
             })
+        }
+
+
+        // 댓글 삭제
+        const removeComment = (id) => {
+          axios.delete('/api/comments/my', {
+            params: {
+              "commentId": id
+            }
+          })
+          .then(res => {
+            commentsLoad();
+          })
         }
 
         // 제품 검색
@@ -173,11 +203,16 @@ export default {
           })
         }
 
-        return { state, route, id, search, addCart, add };
+        return { state, route, id, search, addCart, add, removeComment };
     }
 }
 </script>
 
 <style scoped>
-
+  .btn-delete {
+    margin: 1rem;
+    background: lightgray;
+    color: white;
+    display: inline-block;
+  }
 </style>

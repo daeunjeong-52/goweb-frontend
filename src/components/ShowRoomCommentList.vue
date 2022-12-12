@@ -7,13 +7,30 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { reactive } from 'vue';
 
 export default {
     name: "ShowRoomCommentList",
     props: {
       comment: Object,
-      user: Object
+      user: Object,
     },
+    setup() {
+      const state = reactive({
+          user: null,
+          loggedIn: false,
+          deleteBtn: false
+      });
+
+      axios.get("/api/account")
+      .then(res => {
+        state.user = res.data;
+        state.loggedIn = true;
+      });
+
+      return { state };
+    }
 }
 </script>
 
